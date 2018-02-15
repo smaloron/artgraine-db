@@ -104,11 +104,11 @@ public class SculptureDAO  implements FindableInterface<Sculpture, SculptureDAO>
     }
 
     @Override
-    public int deleteOneById(int id) throws SQLException {
+    public int deleteOneById(Long id) throws SQLException {
         String sql = "DELETE FROM SCULPTURES WHERE ID = ?";
         this.pStatement = this.dbConnection.prepareStatement(sql);
 
-        this.pStatement.setInt(1, id);
+        this.pStatement.setLong(1, id);
 
         return this.pStatement.executeUpdate();
     }

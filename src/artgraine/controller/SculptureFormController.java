@@ -35,9 +35,5 @@ public class SculptureFormController extends AbstractController{
         } catch (SQLException | IllegalAccessException | ClassNotFoundException | InstantiationException e) {
             e.printStackTrace();
         }
-
-
-
-
     }
 }

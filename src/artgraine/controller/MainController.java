@@ -6,6 +6,7 @@ import artgraine.model.Sculpture;
 import artgraine.model.SculptureDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -33,6 +34,8 @@ public class MainController extends AbstractController implements Initializable{
     @FXML public TableColumn<Sculpture, Long> idColumn;
 
     private ObservableList<Sculpture> sculptureList;
+
+    private SculptureDAO dao;
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -43,21 +46,26 @@ public class MainController extends AbstractController implements Initializable{
         insuranceColumn.setCellValueFactory(new PropertyValueFactory<>("insurancePrice"));
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 
+        try {
+        Connection cn = DatabaseConnection.getInstance();
+        dao = new SculptureDAO(cn);
+        } catch (SQLException | IllegalAccessException | ClassNotFoundException | InstantiationException e) {
+            e.printStackTrace();
+        }
+
         setTableData();
     }
 
     private void setTableData(){
         try {
-            Connection cn = DatabaseConnection.getInstance();
-            SculptureDAO dao = new SculptureDAO(cn);
             sculptureList = FXCollections.observableArrayList(dao.findAll().getResults());
             sculptureTableView.setItems(sculptureList);
-        } catch (SQLException | IllegalAccessException | ClassNotFoundException | InstantiationException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private void showSculptureWindow() {
+    private void showSculptureWindow(Sculpture sculpture) {
         try {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("view/SculptureForm.fxml"));
             Pane pane = loader.load();
@@ -72,6 +80,10 @@ public class MainController extends AbstractController implements Initializable{
             SculptureFormController controller = loader.getController();
             controller.setMain(this.main, sculptureStage);
 
+            if(sculpture != null){
+
+            }
+
             sculptureStage.showAndWait();
 
             setTableData();
@@ -81,8 +93,23 @@ public class MainController extends AbstractController implements Initializable{
     }
 
     public void openSculptureForm(){
-        this.showSculptureWindow();
+        this.showSculptureWindow(null);
     }
 
 
+    public void onEdit(ActionEvent actionEvent) {
+        System.out.println(actionEvent);
+    }
+
+    public void onDelete(ActionEvent actionEvent) {
+        System.out.println(actionEvent.getTarget());
+        Sculpture sculpture = sculptureTableView.getSelectionModel().getSelectedItem();
+        try {
+            dao.deleteOneById(sculpture.getId());
+            setTableData();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
 }

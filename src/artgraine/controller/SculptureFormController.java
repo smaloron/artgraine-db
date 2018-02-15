@@ -5,6 +5,7 @@ import artgraine.model.Sculpture;
 import artgraine.model.SculptureDAO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.sql.Connection;
@@ -17,9 +18,15 @@ public class SculptureFormController extends AbstractController{
     @FXML public TextField descriptionTextField;
     @FXML public TextField sizeTextField;
     @FXML public TextField insuranceValueTextField;
+    @FXML public Label formTitleLabel;
+
+    private Sculpture sculpture;
+
+    public SculptureFormController() {
+        sculpture = new Sculpture();
+    }
 
     public void validateForm(ActionEvent actionEvent) {
-        Sculpture sculpture = new Sculpture();
         sculpture.setTitle(titleTextField.getText())
                 .setDescription(descriptionTextField.getText())
                 .setCategory(categoryTextField.getText())
@@ -35,5 +42,17 @@ public class SculptureFormController extends AbstractController{
         } catch (SQLException | IllegalAccessException | ClassNotFoundException | InstantiationException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setFormData(Sculpture sculpture){
+        this.sculpture = sculpture;
+
+        formTitleLabel.setText("Modification d'une sculpture");
+
+        titleTextField.setText(sculpture.getTitle());
+        descriptionTextField.setText(sculpture.getDescription());
+        categoryTextField.setText(sculpture.getCategory());
+        sizeTextField.setText(sculpture.getSizeInCm().toString());
+        insuranceValueTextField.setText(sculpture.getInsurancePrice().toString());
     }
 }

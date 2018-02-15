@@ -12,7 +12,7 @@
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="267.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="artgraine.controller.SculptureFormController">
     <children>
-      <Label alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" prefHeight="47.0" prefWidth="638.0" text="Nouvelle sculpture">
+      <Label alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" prefHeight="47.0" prefWidth="638.0" text="Nouvelle sculpture" fx:id="formTitleLabel">
          <font>
             <Font name="Avenir Black" size="18.0" />
          </font>

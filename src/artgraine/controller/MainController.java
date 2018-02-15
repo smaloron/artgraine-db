@@ -81,7 +81,7 @@ public class MainController extends AbstractController implements Initializable{
             controller.setMain(this.main, sculptureStage);
 
             if(sculpture != null){
-
+                controller.setFormData(sculpture);
             }
 
             sculptureStage.showAndWait();
@@ -98,11 +98,11 @@ public class MainController extends AbstractController implements Initializable{
 
 
     public void onEdit(ActionEvent actionEvent) {
-        System.out.println(actionEvent);
+        Sculpture sculpture = sculptureTableView.getSelectionModel().getSelectedItem();
+        showSculptureWindow(sculpture);
     }
 
     public void onDelete(ActionEvent actionEvent) {
-        System.out.println(actionEvent.getTarget());
         Sculpture sculpture = sculptureTableView.getSelectionModel().getSelectedItem();
         try {
             dao.deleteOneById(sculpture.getId());

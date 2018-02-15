@@ -5,13 +5,18 @@ import artgraine.model.Sculpture;
 import artgraine.model.SculptureDAO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ResourceBundle;
+import java.util.function.UnaryOperator;
 
-public class SculptureFormController extends AbstractController{
+public class SculptureFormController extends AbstractController implements Initializable{
 
     @FXML public TextField categoryTextField;
     @FXML public TextField titleTextField;
@@ -54,5 +59,23 @@ public class SculptureFormController extends AbstractController{
         categoryTextField.setText(sculpture.getCategory());
         sizeTextField.setText(sculpture.getSizeInCm().toString());
         insuranceValueTextField.setText(sculpture.getInsurancePrice().toString());
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        UnaryOperator<TextFormatter.Change> integerFilter = change -> {
+            String text = change.getText();
+
+            if (text.matches("[0-9]*")) {
+                return change;
+            }
+
+            return null;
+        };
+        TextFormatter<String> sizeTexFieldFormatter = new TextFormatter<>(integerFilter);
+        TextFormatter<String> insuranceTextFieldFormatter = new TextFormatter<>(integerFilter);
+
+        sizeTextField.setTextFormatter(sizeTexFieldFormatter);
+        insuranceValueTextField.setTextFormatter(insuranceTextFieldFormatter);
     }
 }

@@ -125,8 +125,5 @@ public class MainController extends AbstractController implements Initializable{
         if (result.get() == ButtonType.OK){
             deleteSculpture();
         }
-
-
-
     }
 }

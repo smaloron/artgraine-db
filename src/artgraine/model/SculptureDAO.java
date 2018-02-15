@@ -113,13 +113,13 @@ public class SculptureDAO  implements FindableInterface<Sculpture, SculptureDAO>
         return this.pStatement.executeUpdate();
     }
 
-    public int save(Sculpture Sculpture) throws SQLException {
+    public int save(Sculpture sculpture) throws SQLException {
         int affectedRows;
-        Long id = Sculpture.getId();
-        if (id <= 0) {
-            affectedRows = this.update(Sculpture);
+        Long id = sculpture.getId();
+        if (id!=null) {
+            affectedRows = this.update(sculpture);
         } else {
-            affectedRows = this.insert(Sculpture);
+            affectedRows = this.insert(sculpture);
         }
         return affectedRows;
     }
@@ -134,13 +134,15 @@ public class SculptureDAO  implements FindableInterface<Sculpture, SculptureDAO>
         this.pStatement.setInt(4, Sculpture.getSizeInCm());
         this.pStatement.setInt(5, Sculpture.getInsurancePrice());
 
+        int result = this.pStatement.executeUpdate();
+
         ResultSet insertRs = this.pStatement.getGeneratedKeys();
 
         if (insertRs.next()) {
-            Sculpture.setId(insertRs.getLong("id"));
+            Sculpture.setId(insertRs.getLong(1));
         }
 
-        return this.pStatement.executeUpdate();
+        return result;
 
     }
 

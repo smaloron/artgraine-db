@@ -11,6 +11,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -22,6 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class MainController extends AbstractController implements Initializable{
@@ -102,7 +105,7 @@ public class MainController extends AbstractController implements Initializable{
         showSculptureWindow(sculpture);
     }
 
-    public void onDelete(ActionEvent actionEvent) {
+    private void deleteSculpture(){
         Sculpture sculpture = sculptureTableView.getSelectionModel().getSelectedItem();
         try {
             dao.deleteOneById(sculpture.getId());
@@ -110,6 +113,20 @@ public class MainController extends AbstractController implements Initializable{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void onDelete(ActionEvent actionEvent) {
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Suppression");
+        alert.setHeaderText("Voulez-vous vraiment supprimer cette sculpture");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            deleteSculpture();
+        }
+
+
 
     }
 }

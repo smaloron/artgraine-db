@@ -7,9 +7,11 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -60,6 +62,15 @@
             <Insets bottom="10.0" top="15.0" />
          </padding>
       </GridPane>
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label alignment="CENTER" text="Filtre">
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
+            </Label>
+            <TextField fx:id="filterTextField" prefHeight="27.0" prefWidth="327.0" />
+         </children></HBox>
         <TableView fx:id="sculptureTableView" maxHeight="1.7976931348623157E308" prefHeight="551.0" prefWidth="780.0" VBox.vgrow="ALWAYS">
             <columns>
             <TableColumn fx:id="idColumn" editable="false" minWidth="0.0" prefWidth="0.0" resizable="false" sortable="false" />

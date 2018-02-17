@@ -6,19 +6,19 @@ import artgraine.model.Sculpture;
 import artgraine.model.SculptureDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.controlsfx.control.table.TableFilter;
 
 import java.io.IOException;
 import java.net.URL;
@@ -35,6 +35,7 @@ public class MainController extends AbstractController implements Initializable{
     @FXML public TableColumn<Sculpture, Integer> insuranceColumn;
     @FXML public TableColumn<Sculpture, String> descriptionColumn;
     @FXML public TableColumn<Sculpture, Long> idColumn;
+    public TextField filterTextField;
 
     private ObservableList<Sculpture> sculptureList;
 
@@ -55,8 +56,34 @@ public class MainController extends AbstractController implements Initializable{
         } catch (SQLException | IllegalAccessException | ClassNotFoundException | InstantiationException e) {
             e.printStackTrace();
         }
+        setFilterEvent();
 
+    }
+
+    private void setFilterEvent(){
         setTableData();
+
+        FilteredList<Sculpture> filteredList = new FilteredList<>(sculptureList, sculpture -> true);
+
+        filterTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredList.setPredicate(sculpture -> {
+                if(newValue == null || newValue.isEmpty()){
+                    return true;
+                }
+
+                String filterValue = newValue.toLowerCase();
+
+                return sculpture.getTitle().toLowerCase().contains(filterValue)
+                        || sculpture.getCategory().toLowerCase().contains(filterValue)
+                        || sculpture.getDescription().toLowerCase().contains(filterValue);
+
+            });
+        });
+
+        SortedList<Sculpture> sortedList = new SortedList<>(filteredList);
+        sortedList.comparatorProperty().bind(sculptureTableView.comparatorProperty());
+        sculptureTableView.setItems(sortedList);
+
     }
 
     private void setTableData(){
@@ -89,7 +116,8 @@ public class MainController extends AbstractController implements Initializable{
 
             sculptureStage.showAndWait();
 
-            setTableData();
+            filterTextField.setText("");
+            setFilterEvent();
         } catch (IOException e) {
             e.printStackTrace();
         }

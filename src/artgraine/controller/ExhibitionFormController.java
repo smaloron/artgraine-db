@@ -46,17 +46,33 @@ public class ExhibitionFormController extends AbstractController implements Init
 
     public ExhibitionFormController() {
         this.exhibition = new Exhibition();
+        Connection cn = null;
+        try {
+            cn = DatabaseConnection.getInstance();
+            exhibitionDAO = new ExhibitionDAO(cn);
+        } catch (SQLException | IllegalAccessException | ClassNotFoundException | InstantiationException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void setFormData(Exhibition exhibition) {
+        this.exhibition = exhibition;
+        formTitleLabel.setText("Modification d'une expo");
+
+        titleTextField.setText(exhibition.getTitle());
+        startDatePicker.setValue(LocalDate.parse(exhibition.getStartDate().toString()));
+        endDatePicker.setValue(LocalDate.parse(exhibition.getEndDate().toString()));
+        departureDatePicker.setValue(LocalDate.parse(exhibition.getDepartureDate().toString()));
+        returnDatePicker.setValue(LocalDate.parse(exhibition.getDepartureDate().toString()));
 
     }
 
     public void validateForm(ActionEvent actionEvent) {
         LocalDate startDate = startDatePicker.getValue();
-        LocalDate endDate = startDatePicker.getValue();
-        LocalDate departureDate = startDatePicker.getValue();
-        LocalDate returnDate = startDatePicker.getValue();
+        LocalDate endDate = endDatePicker.getValue();
+        LocalDate departureDate = departureDatePicker.getValue();
+        LocalDate returnDate = returnDatePicker.getValue();
 
         this.exhibition.setTitle(titleTextField.getText())
                 .setStartDate(Date.valueOf(startDate))
@@ -65,12 +81,9 @@ public class ExhibitionFormController extends AbstractController implements Init
                 .setReturnDate(Date.valueOf(returnDate));
 
         try {
-            Connection cn = DatabaseConnection.getInstance();
-            exhibitionDAO = new ExhibitionDAO(cn);
             exhibitionDAO.save(exhibition);
             closeWindow();
-
-        } catch (SQLException | IllegalAccessException | ClassNotFoundException | InstantiationException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -79,7 +92,7 @@ public class ExhibitionFormController extends AbstractController implements Init
 
     private void setDuration(LocalDate fromDate, LocalDate toDate) {
         Long duration = 0L;
-        if (departureDatePicker.getValue() != null) {
+        if (departureDatePicker.getValue() != null && returnDatePicker.getValue() != null) {
             duration = ChronoUnit.DAYS.between(fromDate, toDate);
         }
         String dayLabel = duration > 1 ? " jours" : " jour";

@@ -78,7 +78,7 @@ public class MainController extends AbstractController implements Initializable{
 
             sculptureStage.setTitle("Artgraine");
             sculptureStage.setScene(new Scene(pane, 500, 300));
-            sculptureStage.setAlwaysOnTop(true);
+            //sculptureStage.setAlwaysOnTop(true);
 
             SculptureFormController controller = loader.getController();
             controller.setMain(this.main, sculptureStage);

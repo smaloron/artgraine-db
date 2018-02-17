@@ -14,7 +14,7 @@ CREATE TABLE EXHIBITIONS(
   end_date DATE NOT NULL,
   departure_date DATE,
   return_date DATE,
-  CONSTRAINT departure_date_check CHECK (departure_date >= start_date),
+  CONSTRAINT departure_date_check CHECK (departure_date <= start_date),
   CONSTRAINT return_date_check CHECK (return_date >= end_date)
 );
 

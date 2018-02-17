@@ -2,7 +2,9 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -48,6 +50,14 @@
             <TableColumn fx:id="returnDateColumn" minWidth="80.0" prefWidth="100.0" text="retour" />
             <TableColumn fx:id="idColumn" editable="false" minWidth="0.0" prefWidth="0.0" resizable="false" sortable="false" />
         </columns>
+         <contextMenu>
+            <ContextMenu>
+              <items>
+                  <MenuItem mnemonicParsing="false" onAction="#onEdit" text="Modifier" />
+                <MenuItem mnemonicParsing="false" onAction="#onDelete" text="Supprimer" />
+              </items>
+            </ContextMenu>
+         </contextMenu>
       </TableView>
    </children>
    <padding>

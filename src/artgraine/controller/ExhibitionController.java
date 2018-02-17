@@ -13,6 +13,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -25,6 +27,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ExhibitionController extends AbstractController implements Initializable{
@@ -97,5 +100,33 @@ public class ExhibitionController extends AbstractController implements Initiali
 
     public void onAddExhibition(ActionEvent actionEvent) {
         showExhibitionWindow(null);
+    }
+
+    public void onEdit(ActionEvent actionEvent) {
+        Exhibition exhibition = exhibitionTableView.getSelectionModel().getSelectedItem();
+        showExhibitionWindow(exhibition);
+    }
+
+    private void deleteExhibition(){
+        Exhibition exhibition = exhibitionTableView.getSelectionModel().getSelectedItem();
+        try {
+            exhibitionDAO.deleteOneById(exhibition.getId());
+            setTableData();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onDelete(ActionEvent actionEvent) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Suppression");
+        alert.setHeaderText("Voulez-vous vraiment supprimer cette expo");
+        Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
+        alertStage.setAlwaysOnTop(true);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            deleteExhibition();
+        }
     }
 }

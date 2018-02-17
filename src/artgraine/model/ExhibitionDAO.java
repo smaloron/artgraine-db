@@ -19,11 +19,11 @@ public class ExhibitionDAO implements FindableInterface<Exhibition, ExhibitionDA
     }
 
     @Override
-    public ExhibitionDAO findOneById(int id) throws SQLException {
+    public ExhibitionDAO findOneById(Long id) throws SQLException {
         String sql = "SELECT * FROM EXHIBITIONS WHERE ID = ?";
         this.pStatement = this.dbConnection.prepareStatement(sql);
 
-        this.pStatement.setInt(1, id);
+        this.pStatement.setLong(1, id);
 
         this.pStatement.executeUpdate();
 
@@ -50,7 +50,7 @@ public class ExhibitionDAO implements FindableInterface<Exhibition, ExhibitionDA
     }
 
     @Override
-    public Map getOneResultAsArray() throws SQLException {
+    public Map<String, String> getOneResultAsArray() throws SQLException {
         Map<String, String> result = new HashMap<>();
 
         if (this.rs.next()) {
@@ -116,7 +116,7 @@ public class ExhibitionDAO implements FindableInterface<Exhibition, ExhibitionDA
     public int save(Exhibition Exhibition) throws SQLException {
         int affectedRows;
         Long id = Exhibition.getId();
-        if (id <= 0) {
+        if (id != null) {
             affectedRows = this.update(Exhibition);
         } else {
             affectedRows = this.insert(Exhibition);
@@ -136,11 +136,13 @@ public class ExhibitionDAO implements FindableInterface<Exhibition, ExhibitionDA
 
         ResultSet insertRs = this.pStatement.getGeneratedKeys();
 
+        int result = this.pStatement.executeUpdate();
+
         if (insertRs.next()) {
             exhibition.setId(insertRs.getLong("id"));
         }
 
-        return this.pStatement.executeUpdate();
+        return result;
 
     }
 

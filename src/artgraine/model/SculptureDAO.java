@@ -19,11 +19,11 @@ public class SculptureDAO  implements FindableInterface<Sculpture, SculptureDAO>
     }
 
     @Override
-    public SculptureDAO findOneById(int id) throws SQLException {
+    public SculptureDAO findOneById(Long id) throws SQLException {
         String sql = "SELECT * FROM SCULPTURES WHERE ID = ?";
         this.pStatement = this.dbConnection.prepareStatement(sql);
 
-        this.pStatement.setInt(1, id);
+        this.pStatement.setLong(1, id);
 
         this.pStatement.executeUpdate();
 

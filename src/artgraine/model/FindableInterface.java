@@ -7,7 +7,7 @@ import java.util.Map;
 public interface FindableInterface<T, DAO> {
     public DAO findAll() throws SQLException;
 
-    public DAO findOneById(int id) throws SQLException;
+    public DAO findOneById(Long id) throws SQLException;
 
     public T getOneResult() throws SQLException;
 

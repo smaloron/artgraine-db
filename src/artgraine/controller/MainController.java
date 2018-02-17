@@ -99,7 +99,6 @@ public class MainController extends AbstractController implements Initializable{
         this.showSculptureWindow(null);
     }
 
-
     public void onEdit(ActionEvent actionEvent) {
         Sculpture sculpture = sculptureTableView.getSelectionModel().getSelectedItem();
         showSculptureWindow(sculpture);
@@ -124,6 +123,28 @@ public class MainController extends AbstractController implements Initializable{
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){
             deleteSculpture();
+        }
+    }
+
+    public void openExhibitionWindow() {
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("view/Exhibitions.fxml"));
+            Pane pane = loader.load();
+
+            Stage exhibitionStage = new Stage();
+            exhibitionStage.initModality(Modality.APPLICATION_MODAL);
+
+            exhibitionStage.setTitle("Artgraine");
+            exhibitionStage.setScene(new Scene(pane));
+            exhibitionStage.setAlwaysOnTop(true);
+
+            ExhibitionController controller = loader.getController();
+            controller.setMain(this.main, exhibitionStage);
+
+            exhibitionStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

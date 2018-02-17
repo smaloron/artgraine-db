@@ -125,7 +125,7 @@ public class ExhibitionDAO implements FindableInterface<Exhibition, ExhibitionDA
     }
 
     private int insert(Exhibition exhibition) throws SQLException {
-        String sql = "INSERT INTO EXHIBITIONS (TITLE, START_DATE, END_DATE, DEPARTURE_DATE, END_DATE) VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO EXHIBITIONS (TITLE, START_DATE, END_DATE, DEPARTURE_DATE, RETURN_DATE) VALUES (?,?,?,?,?)";
         this.pStatement = this.dbConnection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
         this.pStatement.setString(1, exhibition.getTitle());
@@ -134,12 +134,12 @@ public class ExhibitionDAO implements FindableInterface<Exhibition, ExhibitionDA
         this.pStatement.setDate(4, (Date) exhibition.getDepartureDate());
         this.pStatement.setDate(5, (Date) exhibition.getReturnDate());
 
-        ResultSet insertRs = this.pStatement.getGeneratedKeys();
-
         int result = this.pStatement.executeUpdate();
 
+        ResultSet insertRs = this.pStatement.getGeneratedKeys();
+
         if (insertRs.next()) {
-            exhibition.setId(insertRs.getLong("id"));
+            exhibition.setId(insertRs.getLong(1));
         }
 
         return result;

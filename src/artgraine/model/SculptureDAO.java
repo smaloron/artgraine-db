@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SculptureDAO  implements FindableInterface<Sculpture, SculptureDAO>, PersistableInterface<Sculpture> {
+public class SculptureDAO implements FindableInterface<Sculpture, SculptureDAO>, PersistableInterface<Sculpture> {
     private Connection dbConnection;
 
     private ResultSet rs;
@@ -25,7 +25,7 @@ public class SculptureDAO  implements FindableInterface<Sculpture, SculptureDAO>
 
         this.pStatement.setLong(1, id);
 
-        this.pStatement.executeUpdate();
+        this.rs = this.pStatement.executeQuery();
 
         return this;
     }
@@ -89,11 +89,11 @@ public class SculptureDAO  implements FindableInterface<Sculpture, SculptureDAO>
     }
 
     @Override
-    public List<Map<String,String>> getResultsAsArray() throws SQLException{
+    public List<Map<String, String>> getResultsAsArray() throws SQLException {
         List<Map<String, String>> SculptureList = new ArrayList<>();
-        Map<String,String> Sculpture;
+        Map<String, String> Sculpture;
 
-        while(this.rs.next()){
+        while (this.rs.next()) {
             Sculpture = getOneResultAsArray();
 
             SculptureList.add(Sculpture);
@@ -116,7 +116,7 @@ public class SculptureDAO  implements FindableInterface<Sculpture, SculptureDAO>
     public int save(Sculpture sculpture) throws SQLException {
         int affectedRows;
         Long id = sculpture.getId();
-        if (id!=null) {
+        if (id != null) {
             affectedRows = this.update(sculpture);
         } else {
             affectedRows = this.insert(sculpture);
@@ -158,5 +158,88 @@ public class SculptureDAO  implements FindableInterface<Sculpture, SculptureDAO>
         this.pStatement.setLong(6, Sculpture.getId());
 
         return this.pStatement.executeUpdate();
+    }
+
+    public List<Reservation> findAvailableSculptures(Exhibition exhibition) {
+        List<Reservation> SculptureList = new ArrayList<>();
+        Reservation Sculpture;
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("SELECT S.id, S.title, \n");
+        sb.append("E.id IS NOT NULL as selected\n");
+        sb.append("FROM APP.SCULPTURES AS S\n ");
+        sb.append("  LEFT JOIN APP.SCULPTURES_RESERVATIONS AS R\n");
+        sb.append("    ON S.ID=R.SCULPTURE_ID\n");
+        sb.append("  LEFT JOIN APP.EXHIBITIONS AS E\n");
+        sb.append("    ON E.ID=R.EXHIBITION_ID AND\n");
+        sb.append("       (E.DEPARTURE_DATE BETWEEN ? AND ?\n");
+        sb.append("        OR E.RETURN_DATE BETWEEN ? AND ?)\n");
+        sb.append("WHERE E.ID IS NULL OR E.ID= ?\n");
+        
+
+        String sql = sb.toString();
+
+        try {
+            this.pStatement = this.dbConnection.prepareStatement(sql);
+            this.pStatement.setDate(1, Date.valueOf(exhibition.getDepartureDate().toString()));
+            this.pStatement.setDate(2, Date.valueOf(exhibition.getReturnDate().toString()));
+            this.pStatement.setDate(3, Date.valueOf(exhibition.getDepartureDate().toString()));
+            this.pStatement.setDate(4, Date.valueOf(exhibition.getReturnDate().toString()));
+            this.pStatement.setLong(5, exhibition.getId());
+
+            this.rs = this.pStatement.executeQuery();
+
+            while (this.rs.next()) {
+                Sculpture = getOneResevationAsArray();
+                SculptureList.add(Sculpture);
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return SculptureList;
+    }
+
+    private Reservation getOneResevationAsArray() throws SQLException {
+        Reservation result = new Reservation();
+
+        //if (this.rs.next()) {
+            result.setSculptureId(this.rs.getLong("id"));
+            result.setTitle(this.rs.getString("title"));
+            result.setSelected(this.rs.getBoolean("selected"));
+        //}
+
+        return result;
+    }
+
+    public void clearReservation(Long exhibitionId){
+        String sql = "DELETE FROM SCULPTURES_RESERVATIONS WHERE EXHIBITION_ID = ?";
+        try {
+            PreparedStatement stm = this.dbConnection.prepareStatement(sql);
+            stm.setLong(1, exhibitionId);
+            stm.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addReservation(Long exhibitionId, ArrayList<Long> sculptureIds){
+        String sql = "INSERT INTO SCULPTURES_RESERVATIONS  (EXHIBITION_ID, SCULPTURE_ID) VALUES (?,?)";
+        try {
+            PreparedStatement stm = this.dbConnection.prepareStatement(sql);
+            stm.setLong(1, exhibitionId);
+
+            for (Long id: sculptureIds) {
+                stm.setLong(2, id);
+                stm.executeUpdate();
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

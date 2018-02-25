@@ -175,4 +175,26 @@ public class MainController extends AbstractController implements Initializable{
             e.printStackTrace();
         }
     }
+
+    public void openReservationWindow() {
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("view/ReservationForm.fxml"));
+            Pane pane = loader.load();
+
+            Stage reservationStage = new Stage();
+            reservationStage.initModality(Modality.APPLICATION_MODAL);
+
+            reservationStage.setTitle("Artgraine");
+            reservationStage.setScene(new Scene(pane));
+            reservationStage.setAlwaysOnTop(true);
+
+            ReservationController controller = loader.getController();
+            controller.setMain(this.main, reservationStage);
+
+            reservationStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

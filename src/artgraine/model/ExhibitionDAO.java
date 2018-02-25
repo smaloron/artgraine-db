@@ -159,4 +159,18 @@ public class ExhibitionDAO implements FindableInterface<Exhibition, ExhibitionDA
 
         return this.pStatement.executeUpdate();
     }
+
+    public ExhibitionDAO findAllForCombo() throws SQLException {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT \n");
+        sb.append("TITLE ||' '|| CAST(MONTH(DEPARTURE_DATE) AS CHAR(2)) ||' '|| CAST(YEAR(DEPARTURE_DATE) AS CHAR(4))as label,\n");
+        sb.append("EXHIBITIONS.ID\n");
+        sb.append("FROM APP.EXHIBITIONS ORDER BY DEPARTURE_DATE DESC;");
+
+        String sql = sb.toString();
+
+        Statement stm = this.dbConnection.createStatement();
+        this.rs = stm.executeQuery(sql);
+        return this;
+    }
 }

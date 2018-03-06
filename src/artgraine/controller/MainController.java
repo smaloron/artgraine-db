@@ -169,6 +169,8 @@ public class MainController extends AbstractController implements Initializable{
             ExhibitionController controller = loader.getController();
             controller.setMain(this.main, exhibitionStage);
 
+            exhibitionStage.setOnCloseRequest(event -> controller.closeWindow());
+
             exhibitionStage.show();
 
         } catch (IOException e) {

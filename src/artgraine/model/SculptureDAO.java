@@ -215,7 +215,7 @@ public class SculptureDAO implements FindableInterface<Sculpture, SculptureDAO>,
         return result;
     }
 
-    public void clearReservation(Long exhibitionId){
+    public void clearReservations(Long exhibitionId){
         String sql = "DELETE FROM SCULPTURES_RESERVATIONS WHERE EXHIBITION_ID = ?";
         try {
             PreparedStatement stm = this.dbConnection.prepareStatement(sql);
@@ -227,17 +227,22 @@ public class SculptureDAO implements FindableInterface<Sculpture, SculptureDAO>,
         }
     }
 
-    public void addReservation(Long exhibitionId, ArrayList<Long> sculptureIds){
+    public void setReservations(Long exhibitionId, ArrayList<Long> sculptureIds){
         String sql = "INSERT INTO SCULPTURES_RESERVATIONS  (EXHIBITION_ID, SCULPTURE_ID) VALUES (?,?)";
         try {
+            this.dbConnection.setAutoCommit(false);
+
+            this.clearReservations(exhibitionId);
+
             PreparedStatement stm = this.dbConnection.prepareStatement(sql);
             stm.setLong(1, exhibitionId);
 
             for (Long id: sculptureIds) {
                 stm.setLong(2, id);
                 stm.executeUpdate();
-
             }
+            this.dbConnection.commit();
+            this.dbConnection.setAutoCommit(true);
         } catch (SQLException e) {
             e.printStackTrace();
         }

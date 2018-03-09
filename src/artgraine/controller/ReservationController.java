@@ -1,15 +1,13 @@
 package artgraine.controller;
 
 import artgraine.database.DatabaseConnection;
-import artgraine.model.*;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import artgraine.model.Exhibition;
+import artgraine.model.ExhibitionDAO;
+import artgraine.model.Reservation;
+import artgraine.model.SculptureDAO;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListCell;
@@ -18,15 +16,14 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
 
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 public class ReservationController extends AbstractController implements Initializable {
@@ -88,6 +85,9 @@ public class ReservationController extends AbstractController implements Initial
             //Evénement de sélection d'un élément de la liste des expos
             exhibitionListView.getSelectionModel().selectedItemProperty()
                     .addListener((observable, oldValue, newValue) -> {
+
+                        updateReservations();
+
                         this.selectedExhibition = observable.getValue();
                         setSculptureData();
                     });
@@ -108,61 +108,39 @@ public class ReservationController extends AbstractController implements Initial
 
         sculptureColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
 
+        selectedColumn.setCellValueFactory(new PropertyValueFactory<>("selected"));
 
-        selectedColumn.setCellValueFactory(item -> {
-                    if(item != null && item.getValue().selectedProperty() != null){
-                        return item.getValue().selectedProperty();
-                    } else {
-                        return new SimpleBooleanProperty(false);
-                    }
-        });
+        selectedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectedColumn));
 
-        //selectedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectedColumn));
-
-
-        selectedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(param -> {
-            //System.out.println("Cours "+sculptureList.get(param).getTitle()+" changed value to " +sculptureList.get(param).isSelected());
-            return new SimpleBooleanProperty(sculptureList.get(param).isSelected());
-        }));
-
-
-        //selectedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectedColumn));
-
-
-
-        sculptureTableView.setOnMouseClicked(event -> System.out.println(sculptureTableView.getSelectionModel().getSelectedItem()));
 
         selectedColumn.setEditable(true);
 
         sculptureTableView.setItems(sculptureList);
 
+    }
 
+    private void updateReservations(){
+        if(selectedExhibition != null){
+            ArrayList<Long> sculptureIdList = new ArrayList<>();
+            sculptureList.filtered(Reservation::isSelected).forEach(
+                    (item)->{
+                        System.out.println(item.getTitle() + " " + item.isSelected());
+                        sculptureIdList.add(item.getSculptureId());
+                    }
+            );
+
+            sculptureDAO.setReservations(selectedExhibition.getId(), sculptureIdList);
+        }
 
     }
 
 
     public void onValidate(ActionEvent actionEvent) {
-        /*
-        sculptureList.forEach((item)->{
-            System.out.println(item.getTitle() + " " + item.getSelected());
-        });
-           */
+        updateReservations();
+    }
 
-        sculptureList.filtered(Reservation::isSelected).forEach(
-                (item)->{
-                    System.out.println(item.getTitle() + " " + item.isSelected());
-                }
-        );
-
-        /*
-        sculptureTableView.getItems().forEach((item)->{
-            System.out.println(item.getTitle() + " " + item.isSelected());
-        });*/
-
-        /*
-        for (int row = 0; row < sculptureTableView.getItems().size(); row++) {
-            System.out.println(selectedColumn.getCellData(row));
-        }
-        */
+    public void closeWindow(){
+        updateReservations();
+        stage.close();
     }
 }

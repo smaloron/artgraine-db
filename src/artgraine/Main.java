@@ -19,11 +19,10 @@ public class Main extends Application {
     private Stage mainStage;
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
 
         DataBaseMigrator dataBaseMigrator = new DataBaseMigrator();
         dataBaseMigrator.migrate();
-
 
         this.mainStage = primaryStage;
         showMainWindow();
@@ -49,7 +48,4 @@ public class Main extends Application {
         launch(args);
     }
 
-    private void ProvisionDataBase() {
-
-    }
 }

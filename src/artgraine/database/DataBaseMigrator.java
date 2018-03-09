@@ -14,8 +14,13 @@ public class DataBaseMigrator {
         Flyway flyway = new Flyway();
         //flyway.setDataSource((DataSource) dbConnection);
         flyway.setDataSource("jdbc:derby:artgraine.db;create=true","","");
-        flyway.setLocations();
+
+        flyway.setLocations("filesystem:db/migration");
+        /*
         flyway.setBaselineOnMigrate(true);
+        flyway.setCleanOnValidationError(true);
+        flyway.setValidateOnMigrate(true);
+*/
         flyway.migrate();
     }
 }

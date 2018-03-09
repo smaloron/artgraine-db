@@ -10,7 +10,7 @@ public class DatabaseConnection {
     private static Connection dbConnection;
 
     public static Connection getConnection() throws SQLException, ClassNotFoundException, IllegalAccessException, InstantiationException {
-        Class.forName("org.apache.derby.jdbc.ClientDriver").newInstance();
+        Class.forName("org.apache.derby.jdbc.EmbeddedDriver").newInstance();
         Connection connection = DriverManager.getConnection(dsn);
         return connection;
     }

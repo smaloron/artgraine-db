@@ -2,3 +2,5 @@
 out
 artgraine.db
 derby.log
+out/*
+out/artifacts/*

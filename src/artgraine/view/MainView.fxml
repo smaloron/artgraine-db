@@ -39,7 +39,7 @@
             <Button mnemonicParsing="false" text="Exports" />
          </children>
       </FlowPane>
-      <GridPane>
+      <GridPane maxWidth="1.7976931348623157E308">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="612.0" minWidth="10.0" prefWidth="611.0" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="385.0" minWidth="10.0" prefWidth="169.0" />

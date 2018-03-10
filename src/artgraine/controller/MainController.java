@@ -104,8 +104,8 @@ public class MainController extends AbstractController implements Initializable{
             sculptureStage.initModality(Modality.APPLICATION_MODAL);
 
             sculptureStage.setTitle("Artgraine");
-            sculptureStage.setScene(new Scene(pane, 500, 300));
-            //sculptureStage.setAlwaysOnTop(true);
+            sculptureStage.setScene(new Scene(pane));
+            sculptureStage.toFront();
 
             SculptureFormController controller = loader.getController();
             controller.setMain(this.main, sculptureStage);
@@ -164,7 +164,7 @@ public class MainController extends AbstractController implements Initializable{
 
             exhibitionStage.setTitle("Artgraine");
             exhibitionStage.setScene(new Scene(pane));
-            exhibitionStage.setAlwaysOnTop(true);
+            exhibitionStage.toFront();
 
             ExhibitionController controller = loader.getController();
             controller.setMain(this.main, exhibitionStage);
@@ -188,7 +188,7 @@ public class MainController extends AbstractController implements Initializable{
 
             reservationStage.setTitle("Artgraine");
             reservationStage.setScene(new Scene(pane));
-            reservationStage.setAlwaysOnTop(true);
+            reservationStage.toFront();
 
             ReservationController controller = loader.getController();
             controller.setMain(this.main, reservationStage);

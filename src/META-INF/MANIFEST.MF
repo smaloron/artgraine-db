@@ -1,3 +1,4 @@
 Manifest-Version: 1.0
+Class-Path: \artgraine\artgraine-db.jar
 Main-Class: artgraine.Main
 

@@ -166,19 +166,26 @@ public class SculptureDAO implements FindableInterface<Sculpture, SculptureDAO>,
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append("SELECT S.id, S.title, S.description, \n");
-        sb.append("E.id IS NOT NULL as selected\n");
-        sb.append("FROM APP.SCULPTURES AS S\n ");
+        sb.append("SELECT DISTINCT S.id, S.title, S.description, 0 as selected\n");
+        sb.append("FROM APP.SCULPTURES AS S\n");
         sb.append("  LEFT JOIN APP.SCULPTURES_RESERVATIONS AS R\n");
-        sb.append("    ON S.ID=R.SCULPTURE_ID\n");
+        sb.append("      ON S.ID=R.SCULPTURE_ID\n");
         sb.append("  LEFT JOIN APP.EXHIBITIONS AS E\n");
-        sb.append("    ON E.ID=R.EXHIBITION_ID AND\n");
-        sb.append("       (E.DEPARTURE_DATE BETWEEN ? AND ?\n");
-        sb.append("        OR E.RETURN_DATE BETWEEN ? AND ?)\n");
-        sb.append("WHERE E.ID IS NULL OR E.ID= ?\n");
-        
+        sb.append("      ON E.ID=R.EXHIBITION_ID AND\n");
+        sb.append("        (E.DEPARTURE_DATE BETWEEN ? AND ?\n");
+        sb.append("         OR E.RETURN_DATE BETWEEN ? AND ?\n");
+        sb.append("         OR E.RETURN_DATE < ? AND E.DEPARTURE_DATE > ?)\n");
+        sb.append("WHERE E.ID IS NULL\n");
+        sb.append("AND S.id NOT IN(SELECT SCULPTURE_ID FROM APP.SCULPTURES_RESERVATIONS WHERE EXHIBITION_ID = ?)\n");
+        sb.append("UNION\n");
+
+        sb.append("SELECT DISTINCT S.id, S.title, S.description, 1 as selected\n");
+        sb.append("FROM APP.SCULPTURES AS S\n");
+        sb.append("WHERE S.ID IN (SELECT SCULPTURE_ID FROM APP.SCULPTURES_RESERVATIONS WHERE EXHIBITION_ID = ?)\n");
+
 
         String sql = sb.toString();
+
 
         try {
             this.pStatement = this.dbConnection.prepareStatement(sql);
@@ -186,7 +193,10 @@ public class SculptureDAO implements FindableInterface<Sculpture, SculptureDAO>,
             this.pStatement.setDate(2, Date.valueOf(exhibition.getReturnDate().toString()));
             this.pStatement.setDate(3, Date.valueOf(exhibition.getDepartureDate().toString()));
             this.pStatement.setDate(4, Date.valueOf(exhibition.getReturnDate().toString()));
-            this.pStatement.setLong(5, exhibition.getId());
+            this.pStatement.setDate(5, Date.valueOf(exhibition.getDepartureDate().toString()));
+            this.pStatement.setDate(6, Date.valueOf(exhibition.getReturnDate().toString()));
+            this.pStatement.setLong(7, exhibition.getId());
+            this.pStatement.setLong(8, exhibition.getId());
 
             this.rs = this.pStatement.executeQuery();
 
@@ -207,16 +217,16 @@ public class SculptureDAO implements FindableInterface<Sculpture, SculptureDAO>,
         Reservation result = new Reservation();
 
         //if (this.rs.next()) {
-            result.setSculptureId(this.rs.getLong("id"));
-            result.setTitle(this.rs.getString("title"));
-            result.setDescription(this.rs.getString("description"));
-            result.setSelected(this.rs.getBoolean("selected"));
+        result.setSculptureId(this.rs.getLong("id"));
+        result.setTitle(this.rs.getString("title"));
+        result.setDescription(this.rs.getString("description"));
+        result.setSelected(this.rs.getBoolean("selected"));
         //}
 
         return result;
     }
 
-    public void clearReservations(Long exhibitionId){
+    public void clearReservations(Long exhibitionId) {
         String sql = "DELETE FROM SCULPTURES_RESERVATIONS WHERE EXHIBITION_ID = ?";
         try {
             PreparedStatement stm = this.dbConnection.prepareStatement(sql);
@@ -228,7 +238,7 @@ public class SculptureDAO implements FindableInterface<Sculpture, SculptureDAO>,
         }
     }
 
-    public void setReservations(Long exhibitionId, ArrayList<Long> sculptureIds){
+    public void setReservations(Long exhibitionId, ArrayList<Long> sculptureIds) {
         String sql = "INSERT INTO SCULPTURES_RESERVATIONS  (EXHIBITION_ID, SCULPTURE_ID) VALUES (?,?)";
         try {
             this.dbConnection.setAutoCommit(false);
@@ -238,7 +248,7 @@ public class SculptureDAO implements FindableInterface<Sculpture, SculptureDAO>,
             PreparedStatement stm = this.dbConnection.prepareStatement(sql);
             stm.setLong(1, exhibitionId);
 
-            for (Long id: sculptureIds) {
+            for (Long id : sculptureIds) {
                 stm.setLong(2, id);
                 stm.executeUpdate();
             }

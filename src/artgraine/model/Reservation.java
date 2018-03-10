@@ -6,6 +6,7 @@ import javafx.scene.control.CheckBox;
 public class Reservation {
 
     private String title;
+    private String description;
     private Long sculptureId;
     private SimpleBooleanProperty selected;
 
@@ -41,5 +42,14 @@ public class Reservation {
 
     public void setSelected(boolean selected) {
         this.selected.set(selected);
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Reservation setDescription(String description) {
+        this.description = description;
+        return this;
     }
 }

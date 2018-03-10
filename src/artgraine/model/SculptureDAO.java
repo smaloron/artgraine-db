@@ -166,7 +166,7 @@ public class SculptureDAO implements FindableInterface<Sculpture, SculptureDAO>,
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append("SELECT S.id, S.title, \n");
+        sb.append("SELECT S.id, S.title, S.description, \n");
         sb.append("E.id IS NOT NULL as selected\n");
         sb.append("FROM APP.SCULPTURES AS S\n ");
         sb.append("  LEFT JOIN APP.SCULPTURES_RESERVATIONS AS R\n");
@@ -209,6 +209,7 @@ public class SculptureDAO implements FindableInterface<Sculpture, SculptureDAO>,
         //if (this.rs.next()) {
             result.setSculptureId(this.rs.getLong("id"));
             result.setTitle(this.rs.getString("title"));
+            result.setDescription(this.rs.getString("description"));
             result.setSelected(this.rs.getBoolean("selected"));
         //}
 

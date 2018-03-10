@@ -27,14 +27,12 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class ReservationController extends AbstractController implements Initializable {
-    @FXML
-    public TableView<Reservation> sculptureTableView;
-    @FXML
-    public TableColumn<Reservation, String> sculptureColumn;
-    @FXML
-    public TableColumn<Reservation, Boolean> selectedColumn;
-    @FXML
-    public ListView<Exhibition> exhibitionListView;
+    @FXML public TableView<Reservation> sculptureTableView;
+    @FXML public TableColumn<Reservation, String> sculptureColumn;
+    @FXML public TableColumn<Reservation, Boolean> selectedColumn;
+    @FXML public TableColumn<Reservation,String> descriptionColumn;
+    @FXML public ListView<Exhibition> exhibitionListView;
+
 
     private ExhibitionDAO exhibitionDAO;
     private SculptureDAO sculptureDAO;
@@ -56,7 +54,14 @@ public class ReservationController extends AbstractController implements Initial
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         setExhibitionListData();
+
+        //Largeur des colonnes de la table des sculptures
+        sculptureColumn.prefWidthProperty().bind(sculptureTableView.widthProperty().multiply(.4));
+        descriptionColumn.prefWidthProperty().bind(sculptureTableView.widthProperty().multiply(.55));
+        selectedColumn.prefWidthProperty().bind(sculptureTableView.widthProperty().multiply(.05));
+
     }
 
     private void setExhibitionListData() {
@@ -107,6 +112,8 @@ public class ReservationController extends AbstractController implements Initial
         sculptureList = FXCollections.observableArrayList(sculptureDAO.findAvailableSculptures(selectedExhibition));
 
         sculptureColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+
+        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
 
         selectedColumn.setCellValueFactory(new PropertyValueFactory<>("selected"));
 

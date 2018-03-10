@@ -41,8 +41,8 @@
       <GridPane maxHeight="1.7976931348623157E308" prefHeight="553.0" prefWidth="873.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
         <columnConstraints>
             <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="ALWAYS" maxWidth="288.0" minWidth="10.0" prefWidth="167.0" />
-          <ColumnConstraints hgrow="ALWAYS" maxWidth="439.0" minWidth="10.0" prefWidth="439.0" />
+          <ColumnConstraints hgrow="ALWAYS" maxWidth="412.0" minWidth="10.0" prefWidth="397.0" />
+          <ColumnConstraints hgrow="ALWAYS" maxWidth="439.0" minWidth="10.0" prefWidth="270.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints maxHeight="273.0" minHeight="10.0" prefHeight="36.0" vgrow="NEVER" />
@@ -51,8 +51,10 @@
          <children>
             <TableView fx:id="sculptureTableView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="569.0" prefWidth="439.0" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
               <columns>
-                <TableColumn fx:id="sculptureColumn" prefWidth="342.0" text="Sculpture" />
-                <TableColumn fx:id="selectedColumn" minWidth="0.0" prefWidth="70.0" text="Sélection" />
+                  <TableColumn fx:id="selectedColumn" maxWidth="50.0" minWidth="0.0" prefWidth="35.0" resizable="false" />
+                <TableColumn fx:id="sculptureColumn" prefWidth="200.0" text="Sculpture" />
+                  <TableColumn fx:id="descriptionColumn" minWidth="0.0" prefWidth="297.0" text="Description" />
+                
               </columns>
             </TableView>
             <ListView fx:id="exhibitionListView" maxHeight="1.7976931348623157E308" prefHeight="569.0" prefWidth="417.0" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" />

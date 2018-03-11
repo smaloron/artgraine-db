@@ -238,7 +238,7 @@ public class SculptureDAO implements FindableInterface<Sculpture, SculptureDAO>,
         }
     }
 
-    public void setReservations(Long exhibitionId, ArrayList<Long> sculptureIds) {
+    public void saveAllReservations(Long exhibitionId, ArrayList<Long> sculptureIds) {
         String sql = "INSERT INTO SCULPTURES_RESERVATIONS  (EXHIBITION_ID, SCULPTURE_ID) VALUES (?,?)";
         try {
             this.dbConnection.setAutoCommit(false);
@@ -254,6 +254,48 @@ public class SculptureDAO implements FindableInterface<Sculpture, SculptureDAO>,
             }
             this.dbConnection.commit();
             this.dbConnection.setAutoCommit(true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean sculptureIsSelected(Long exhibitionId, Reservation item) {
+        boolean selected = false;
+        String sql = "SELECT COUNT(*) FROM SCULPTURES_RESERVATIONS  WHERE EXHIBITION_ID=? AND SCULPTURE_ID=?";
+        try {
+            PreparedStatement stm = this.dbConnection.prepareStatement(sql);
+            stm.setLong(1, exhibitionId);
+            stm.setLong(2, item.getSculptureId());
+
+            ResultSet rs = stm.executeQuery();
+            if(rs.next()){
+                selected = rs.getInt(1)> 0;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return selected;
+
+    }
+
+    public void saveOneReservation(Long exhibitionId, Reservation item) {
+        String sql = "";
+        boolean alreadySelected = sculptureIsSelected(exhibitionId, item);
+
+        if (item.isSelected() && ! alreadySelected) {
+            sql = "INSERT INTO SCULPTURES_RESERVATIONS  (EXHIBITION_ID, SCULPTURE_ID) VALUES (?,?)";
+        } else if(alreadySelected){
+            sql = "DELETE FROM SCULPTURES_RESERVATIONS  WHERE EXHIBITION_ID=? AND SCULPTURE_ID=?";
+        } else {
+            return;
+        }
+        try {
+            PreparedStatement stm = this.dbConnection.prepareStatement(sql);
+            stm.setLong(1, exhibitionId);
+            stm.setLong(2, item.getSculptureId());
+            stm.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

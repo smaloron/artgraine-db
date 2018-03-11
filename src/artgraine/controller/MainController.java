@@ -50,6 +50,14 @@ public class MainController extends AbstractController implements Initializable{
         insuranceColumn.setCellValueFactory(new PropertyValueFactory<>("insurancePrice"));
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 
+        //Largeur des colonnes de la table des sculptures
+        titleColumn.prefWidthProperty().bind(sculptureTableView.widthProperty().multiply(.25));
+        descriptionColumn.prefWidthProperty().bind(sculptureTableView.widthProperty().multiply(.40));
+        categoryColumn.prefWidthProperty().bind(sculptureTableView.widthProperty().multiply(.15));
+        sizeColumn.prefWidthProperty().bind(sculptureTableView.widthProperty().multiply(.10));
+        insuranceColumn.prefWidthProperty().bind(sculptureTableView.widthProperty().multiply(.10));
+
+
         try {
         Connection cn = DatabaseConnection.getInstance();
         dao = new SculptureDAO(cn);

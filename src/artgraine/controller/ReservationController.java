@@ -5,15 +5,15 @@ import artgraine.model.Exhibition;
 import artgraine.model.ExhibitionDAO;
 import artgraine.model.Reservation;
 import artgraine.model.SculptureDAO;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
@@ -32,8 +32,10 @@ public class ReservationController extends AbstractController implements Initial
     @FXML public TableColumn<Reservation, Boolean> selectedColumn;
     @FXML public TableColumn<Reservation,String> descriptionColumn;
     @FXML public ListView<Exhibition> exhibitionListView;
+    @FXML public Label selectedSculptureCountLabel;
 
 
+    private int selectedSculptureNumber= 0;
     private ExhibitionDAO exhibitionDAO;
     private SculptureDAO sculptureDAO;
 
@@ -117,15 +119,70 @@ public class ReservationController extends AbstractController implements Initial
 
         selectedColumn.setCellValueFactory(new PropertyValueFactory<>("selected"));
 
-        selectedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectedColumn));
 
+        //Sélection d'une sculpture en cochant sa case
+        selectedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(param -> {
+            //
+            sculptureList.get(param).selectedProperty().addListener((observable, oldValue, newValue) -> {
+                updateSculptureCount();
+                updateSculptureSelection(sculptureList.get(param));
+            });
+
+            sculptureTableView.getSelectionModel().select(param);
+            return sculptureList.get(param).selectedProperty();
+        }));
 
         selectedColumn.setEditable(true);
 
+        //Sélection d'une sculpture lors de la sélection d'une ligne
+        /*
+        sculptureTableView.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    observable.getValue().setSelected(! observable.getValue().isSelected());
+                    updateSculptureCount();
+                    updateSculptureSelection(observable.getValue());
+
+                }
+        );*/
+
         sculptureTableView.setItems(sculptureList);
+
+        /*
+        sculptureList.addListener(new ListChangeListener<Reservation>() {
+            @Override
+            public void onChanged(Change<? extends Reservation> c) {
+                updateSculptureCount();
+            }
+        });*/
+
+        updateSculptureCount();
 
     }
 
+    private void updateSculptureSelection(Reservation item){
+        if(selectedExhibition != null){
+            sculptureDAO.saveOneReservation(selectedExhibition.getId(), item);
+        }
+    }
+
+    /**
+     * Compte du nombre de sculptures sélectionnées
+     */
+    private void updateSculptureCount(){
+        selectedSculptureNumber = sculptureList.filtered(Reservation::isSelected).size();
+        showSculptureCount();
+    }
+
+    private void showSculptureCount(){
+        String plural = selectedSculptureNumber>1?"s":"";
+        selectedSculptureCountLabel.setText(selectedSculptureNumber + " sculpture"+plural+" sélectionnée"+plural);
+    }
+
+
+
+    /**
+     * Mise à jour des sculptures sélectionnées dans la base de données
+     */
     private void updateReservations(){
         if(selectedExhibition != null){
             ArrayList<Long> sculptureIdList = new ArrayList<>();
@@ -136,9 +193,8 @@ public class ReservationController extends AbstractController implements Initial
                     }
             );
 
-            sculptureDAO.setReservations(selectedExhibition.getId(), sculptureIdList);
+            sculptureDAO.saveAllReservations(selectedExhibition.getId(), sculptureIdList);
         }
-
     }
 
 

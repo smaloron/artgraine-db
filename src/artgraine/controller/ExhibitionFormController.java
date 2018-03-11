@@ -56,7 +56,14 @@ public class ExhibitionFormController extends AbstractController implements Init
 
     }
 
+
+    public ExhibitionFormController setExhibition(Exhibition exhibition) {
+        this.exhibition = exhibition;
+        return this;
+    }
+
     public void setFormData(Exhibition exhibition) {
+
         this.exhibition = exhibition;
         formTitleLabel.setText("Modification d'une expo");
 
@@ -64,7 +71,9 @@ public class ExhibitionFormController extends AbstractController implements Init
         startDatePicker.setValue(LocalDate.parse(exhibition.getStartDate().toString()));
         endDatePicker.setValue(LocalDate.parse(exhibition.getEndDate().toString()));
         departureDatePicker.setValue(LocalDate.parse(exhibition.getDepartureDate().toString()));
-        returnDatePicker.setValue(LocalDate.parse(exhibition.getDepartureDate().toString()));
+        returnDatePicker.setValue(LocalDate.parse(exhibition.getReturnDate().toString()));
+
+        setDuration(departureDatePicker.getValue(), returnDatePicker.getValue());
 
     }
 
@@ -92,7 +101,7 @@ public class ExhibitionFormController extends AbstractController implements Init
 
     private void setDuration(LocalDate fromDate, LocalDate toDate) {
         Long duration = 0L;
-        if (departureDatePicker.getValue() != null && returnDatePicker.getValue() != null) {
+        if (fromDate != null && toDate != null) {
             duration = ChronoUnit.DAYS.between(fromDate, toDate);
         }
         String dayLabel = duration > 1 ? " jours" : " jour";
@@ -142,7 +151,7 @@ public class ExhibitionFormController extends AbstractController implements Init
         setDatePickerEvents();
 
         //Calcul de la durée totale d'une expo de sa date de départ jusqu'à sa date d'arrivée
-        setDuration(departureDatePicker.getValue(), returnDatePicker.getValue());
+        //setDuration(departureDatePicker.getValue(), returnDatePicker.getValue());
 
     }
 }

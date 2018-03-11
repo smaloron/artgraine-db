@@ -88,6 +88,7 @@ public class ExhibitionController extends AbstractController implements Initiali
 
             if(exhibition != null){
                 controller.setFormData(exhibition);
+                //controller.setExhibition(exhibition);
             }
 
             sculptureStage.showAndWait();

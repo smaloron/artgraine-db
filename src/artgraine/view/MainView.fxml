@@ -36,7 +36,7 @@
                   <Insets right="20.0" />
                </FlowPane.margin>
             </Button>
-            <Button mnemonicParsing="false" text="Exports" />
+            <Button mnemonicParsing="false" onAction="#openExportWindow" text="Exports" />
          </children>
       </FlowPane>
       <GridPane maxWidth="1.7976931348623157E308">

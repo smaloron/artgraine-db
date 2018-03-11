@@ -104,6 +104,7 @@ public class MainController extends AbstractController implements Initializable{
     }
 
     private void showSculptureWindow(Sculpture sculpture) {
+
         try {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("view/SculptureForm.fxml"));
             Pane pane = loader.load();
@@ -169,49 +170,42 @@ public class MainController extends AbstractController implements Initializable{
         }
     }
 
-    public void openExhibitionWindow() {
+    private Stage openWindow(String viewFile){
+        Stage windowStage = new Stage();
         try {
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource("view/Exhibitions.fxml"));
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource(viewFile));
             Pane pane = loader.load();
 
-            Stage exhibitionStage = new Stage();
-            exhibitionStage.initModality(Modality.APPLICATION_MODAL);
+            windowStage.initModality(Modality.APPLICATION_MODAL);
 
-            exhibitionStage.setTitle("Artgraine");
-            exhibitionStage.setScene(new Scene(pane));
-            exhibitionStage.toFront();
+            windowStage.setTitle("Artgraine");
+            windowStage.setScene(new Scene(pane));
+            windowStage.toFront();
 
-            ExhibitionController controller = loader.getController();
-            controller.setMain(this.main, exhibitionStage);
+            AbstractController controller = loader.getController();
+            controller.setMain(this.main, windowStage);
 
-            exhibitionStage.setOnCloseRequest(event -> controller.closeWindow());
+            windowStage.setOnCloseRequest(event -> controller.closeWindow());
 
-            exhibitionStage.show();
+            windowStage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return windowStage;
+
+    }
+
+    public void openExhibitionWindow() {
+        openWindow("view/Exhibitions.fxml").show();
+    }
+
+    public void openExportWindow() {
+        openWindow("view/ExportView.fxml").show();
     }
 
     public void openReservationWindow() {
-        try {
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource("view/ReservationForm.fxml"));
-            Pane pane = loader.load();
-
-            Stage reservationStage = new Stage();
-            reservationStage.initModality(Modality.APPLICATION_MODAL);
-
-            reservationStage.setTitle("Artgraine");
-            reservationStage.setScene(new Scene(pane));
-            reservationStage.toFront();
-
-            ReservationController controller = loader.getController();
-            controller.setMain(this.main, reservationStage);
-
-            reservationStage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        openWindow("view/ReservationForm.fxml").show();
     }
 }

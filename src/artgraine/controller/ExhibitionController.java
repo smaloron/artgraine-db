@@ -42,6 +42,7 @@ public class ExhibitionController extends AbstractController implements Initiali
     private ObservableList<Exhibition> exhibitionList;
 
     private ExhibitionDAO exhibitionDAO;
+    private SculptureDAO sculptureDAO;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -55,6 +56,7 @@ public class ExhibitionController extends AbstractController implements Initiali
         try {
             Connection cn = DatabaseConnection.getInstance();
             exhibitionDAO = new ExhibitionDAO(cn);
+            sculptureDAO = new SculptureDAO(cn);
         } catch (SQLException | IllegalAccessException | ClassNotFoundException | InstantiationException e) {
             e.printStackTrace();
         }
@@ -88,7 +90,6 @@ public class ExhibitionController extends AbstractController implements Initiali
 
             if(exhibition != null){
                 controller.setFormData(exhibition);
-                //controller.setExhibition(exhibition);
             }
 
             sculptureStage.showAndWait();
@@ -111,7 +112,16 @@ public class ExhibitionController extends AbstractController implements Initiali
     private void deleteExhibition(){
         Exhibition exhibition = exhibitionTableView.getSelectionModel().getSelectedItem();
         try {
-            exhibitionDAO.deleteOneById(exhibition.getId());
+            if(sculptureDAO.exhibitionHasSculptures(exhibition.getId())){
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Opération impossible");
+                alert.setHeaderText("Vous ne pouvez pas supprimer une exposition qui a des sculptures réservées");
+                alert.showAndWait();
+            } else {
+                exhibitionDAO.deleteOneById(exhibition.getId());
+            }
+
+
             setTableData();
         } catch (SQLException e) {
             e.printStackTrace();

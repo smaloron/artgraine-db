@@ -143,8 +143,15 @@ public class MainController extends AbstractController implements Initializable{
     private void deleteSculpture(){
         Sculpture sculpture = sculptureTableView.getSelectionModel().getSelectedItem();
         try {
-            dao.deleteOneById(sculpture.getId());
-            setTableData();
+            if(dao.sculptureIsExhibited(sculpture.getId())){
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Opération impossible");
+                alert.setHeaderText("Vous ne pouvez pas supprimer une sculpture présente dans une exposition");
+                alert.showAndWait();
+            } else {
+                dao.deleteOneById(sculpture.getId());
+                setTableData();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

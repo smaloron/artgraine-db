@@ -259,6 +259,34 @@ public class SculptureDAO implements FindableInterface<Sculpture, SculptureDAO>,
         }
     }
 
+    public boolean exhibitionHasSculptures(Long exhibitionId){
+        String sql = "SELECT COUNT(*) FROM SCULPTURES_RESERVATIONS  WHERE EXHIBITION_ID=?";
+        return checkIfExists(sql, exhibitionId);
+    }
+
+    public boolean sculptureIsExhibited(Long sculptureId){
+        String sql = "SELECT COUNT(*) FROM SCULPTURES_RESERVATIONS  WHERE SCULPTURE_ID=?";
+        return checkIfExists(sql, sculptureId);
+    }
+
+    private boolean checkIfExists(String sql, Long id){
+        boolean selected = false;
+        try {
+            PreparedStatement stm = this.dbConnection.prepareStatement(sql);
+            stm.setLong(1, id);
+
+            ResultSet rs = stm.executeQuery();
+            if(rs.next()){
+                selected = rs.getInt(1)> 0;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return selected;
+    }
+
     public boolean sculptureIsSelected(Long exhibitionId, Reservation item) {
         boolean selected = false;
         String sql = "SELECT COUNT(*) FROM SCULPTURES_RESERVATIONS  WHERE EXHIBITION_ID=? AND SCULPTURE_ID=?";

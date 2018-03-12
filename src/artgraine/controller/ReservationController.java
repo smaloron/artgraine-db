@@ -71,24 +71,6 @@ public class ReservationController extends AbstractController implements Initial
             exhibitionList = FXCollections.observableArrayList(exhibitionDAO.findAll().getResults());
             exhibitionListView.setItems(exhibitionList);
 
-            // Cell factory gère l'affichage des éléments de la liste des expos
-            exhibitionListView.setCellFactory(new Callback<ListView<Exhibition>, ListCell<Exhibition>>() {
-                @Override
-                public ListCell<Exhibition> call(ListView<Exhibition> p) {
-                    return new ListCell<Exhibition>() {
-                        @Override
-                        protected void updateItem(Exhibition t, boolean bln) {
-                            super.updateItem(t, bln);
-                            if (t != null) {
-                                DateFormat dtf = DateFormat.getDateInstance(DateFormat.SHORT, new Locale("FR", "fr"));
-                                setText(t.getTitle() + " du " + dtf.format(t.getDepartureDate()) + " au " + dtf.format(t.getReturnDate()));
-                            }
-                        }
-
-                    };
-                }
-            });
-
             //Evénement de sélection d'un élément de la liste des expos
             exhibitionListView.getSelectionModel().selectedItemProperty()
                     .addListener((observable, oldValue, newValue) -> {

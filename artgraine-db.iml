@@ -7,10 +7,24 @@
     </content>
     <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="derbyclient-10.14.1.0" level="project" />
+    <orderEntry type="library" name="derby-10.14.1.0" level="project" />
+    <orderEntry type="library" name="flyway-core-5.0.7" level="project" />
+    <orderEntry type="library" name="jxls-poi-1.0.14" level="project" />
+    <orderEntry type="library" name="jxls-2.4.3" level="project" />
+    <orderEntry type="library" name="jxls-reader-2.0.3" level="project" />
+    <orderEntry type="library" name="jxls-jexcel-1.0.6" level="project" />
+    <orderEntry type="library" name="slf4j-api-1.7.25" level="project" />
+    <orderEntry type="library" name="slf4j-simple-1.7.25" level="project" />
+    <orderEntry type="library" name="controlsfx-8.40.14" level="project" />
+    <orderEntry type="library" name="poi-3.17" level="project" />
+    <orderEntry type="library" name="poi-ooxml-schemas-3.17" level="project" />
+    <orderEntry type="library" name="poi-ooxml-3.17" level="project" />
+    <orderEntry type="library" name="commons-jexl-2.0" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$APPLICATION_CONFIG_DIR$/jdbc-drivers/Apache Derby/10.14.1.0/derbyclient-10.14.1.0.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/commons-collections4-4.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -19,25 +33,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$APPLICATION_CONFIG_DIR$/jdbc-drivers/Apache Derby/10.14.1.0/derby-10.14.1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/Downloads/controlsfx-8.40.14/controlsfx-8.40.14.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/Downloads/flyway-core-5.0.7.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/commons-logging-1.1.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

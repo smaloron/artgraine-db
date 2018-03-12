@@ -213,6 +213,16 @@ public class SculptureDAO implements FindableInterface<Sculpture, SculptureDAO>,
         return SculptureList;
     }
 
+
+    public SculptureDAO findSculptureByExhibition(Exhibition exhibition) throws SQLException {
+        String sql = "SELECT S.* FROM SCULPTURES S INNER JOIN SCULPTURES_RESERVATIONS R ON S.ID = R.SCULPTURE_ID AND R.EXHIBITION_ID= ?";
+        PreparedStatement stm = this.dbConnection.prepareStatement(sql);
+        stm.setLong(1, exhibition.getId());
+        this.rs = stm.executeQuery();
+        return this;
+
+    }
+
     private Reservation getOneResevationAsArray() throws SQLException {
         Reservation result = new Reservation();
 
@@ -328,4 +338,6 @@ public class SculptureDAO implements FindableInterface<Sculpture, SculptureDAO>,
             e.printStackTrace();
         }
     }
+
+
 }

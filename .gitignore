@@ -4,3 +4,5 @@ artgraine.db
 derby.log
 out/*
 out/artifacts/*
+lib
+libs

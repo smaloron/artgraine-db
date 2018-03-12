@@ -1,5 +1,8 @@
 package artgraine.model;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Sculpture {
 
     private Long id;
@@ -14,6 +17,8 @@ public class Sculpture {
 
     private Integer insurancePrice;
 
+    private Integer unit;
+
     public Sculpture() {
     }
 
@@ -23,6 +28,7 @@ public class Sculpture {
         this.category = category;
         this.sizeInCm = size;
         this.insurancePrice = insurancePrice;
+        setUnit();
     }
 
     public Sculpture(Long id, String title, String description, String category, Integer size, Integer insurancePrice) {
@@ -32,6 +38,19 @@ public class Sculpture {
         this.category = category;
         this.sizeInCm = size;
         this.insurancePrice = insurancePrice;
+        setUnit();
+    }
+
+    private void setUnit(){
+        int qt = 1;
+        Pattern pattern = Pattern.compile("^.*[xX][ ]?([0-9]).*[ ]?$");
+        Matcher matcher = pattern.matcher(this.title);
+        boolean found = matcher.matches();
+        if(found){
+            qt = Integer.valueOf(matcher.group(1));
+        }
+
+        this.unit = qt;
     }
 
     public Long getId() {
@@ -49,6 +68,7 @@ public class Sculpture {
 
     public Sculpture setTitle(String title) {
         this.title = title;
+        setUnit();
         return this;
     }
 
@@ -86,5 +106,9 @@ public class Sculpture {
     public Sculpture setInsurancePrice(Integer insurancePrice) {
         this.insurancePrice = insurancePrice;
         return this;
+    }
+
+    public Integer getTotalInsuranceValue(){
+        return this.unit * this.insurancePrice;
     }
 }

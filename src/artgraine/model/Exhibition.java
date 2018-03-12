@@ -1,7 +1,9 @@
 package artgraine.model;
 
 
+import java.text.DateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Exhibition {
 
@@ -95,5 +97,11 @@ public class Exhibition {
     public Exhibition setReturnDate(Date returnDate) {
         this.returnDate = returnDate;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        DateFormat dtf = DateFormat.getDateInstance(DateFormat.SHORT, new Locale("FR", "fr"));
+        return (title + " du " + dtf.format(departureDate) + " au " + dtf.format(returnDate));
     }
 }

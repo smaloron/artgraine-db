@@ -1,12 +1,17 @@
 package artgraine.controller;
 
 import artgraine.database.DatabaseConnection;
+import artgraine.model.Exhibition;
+import artgraine.model.ExhibitionDAO;
 import artgraine.model.Sculpture;
 import artgraine.model.SculptureDAO;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 
@@ -24,8 +29,14 @@ public class SculptureFormController extends AbstractController implements Initi
     @FXML public TextField sizeTextField;
     @FXML public TextField insuranceValueTextField;
     @FXML public Label formTitleLabel;
+    @FXML public ListView<Exhibition> exhibitionListView;
 
     private Sculpture sculpture;
+    private ExhibitionDAO exhibitionDAO;
+    private SculptureDAO sculptureDAO;
+
+    private ObservableList<Exhibition> exhibitionList;
+
 
     public SculptureFormController() {
         sculpture = new Sculpture();
@@ -39,12 +50,11 @@ public class SculptureFormController extends AbstractController implements Initi
                 .setInsurancePrice(Integer.valueOf(insuranceValueTextField.getText()));
 
         try {
-            Connection cn = DatabaseConnection.getInstance();
-            SculptureDAO dao = new SculptureDAO(cn);
-            dao.save(sculpture);
+
+            sculptureDAO.save(sculpture);
             closeWindow();
 
-        } catch (SQLException | IllegalAccessException | ClassNotFoundException | InstantiationException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -59,10 +69,26 @@ public class SculptureFormController extends AbstractController implements Initi
         categoryTextField.setText(sculpture.getCategory());
         sizeTextField.setText(sculpture.getSizeInCm().toString());
         insuranceValueTextField.setText(sculpture.getInsurancePrice().toString());
+
+        try {
+            setExhibitiondata();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        try {
+            Connection cn = DatabaseConnection.getInstance();
+            sculptureDAO = new SculptureDAO(cn);
+            exhibitionDAO = new ExhibitionDAO(cn);
+        } catch (SQLException | IllegalAccessException | ClassNotFoundException | InstantiationException e) {
+            e.printStackTrace();
+        }
+
+
         UnaryOperator<TextFormatter.Change> integerFilter = change -> {
             String text = change.getText();
 
@@ -77,5 +103,10 @@ public class SculptureFormController extends AbstractController implements Initi
 
         sizeTextField.setTextFormatter(sizeTexFieldFormatter);
         insuranceValueTextField.setTextFormatter(insuranceTextFieldFormatter);
+    }
+
+    private void setExhibitiondata() throws SQLException {
+        exhibitionList = FXCollections.observableArrayList(exhibitionDAO.findAllBySculptureReservation(sculpture).getResults());
+        exhibitionListView.setItems(exhibitionList);
     }
 }

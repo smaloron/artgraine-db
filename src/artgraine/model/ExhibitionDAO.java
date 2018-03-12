@@ -25,7 +25,7 @@ public class ExhibitionDAO implements FindableInterface<Exhibition, ExhibitionDA
 
         this.pStatement.setLong(1, id);
 
-        this.pStatement.executeUpdate();
+        this.rs = this.pStatement.executeQuery();
 
         return this;
     }
@@ -173,4 +173,27 @@ public class ExhibitionDAO implements FindableInterface<Exhibition, ExhibitionDA
         this.rs = stm.executeQuery(sql);
         return this;
     }
+
+    public ExhibitionDAO findAllBySculptureReservation(Sculpture sculpture) throws SQLException {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT \n");
+        sb.append("E.*");
+        sb.append("FROM APP.EXHIBITIONS E \n");
+        sb.append(" INNER JOIN SCULPTURES_RESERVATIONS R \n");
+        sb.append("ON R.EXHIBITION_ID=E.ID \n");
+        sb.append("AND R.SCULPTURE_ID=? \n");
+        sb.append("ORDER BY DEPARTURE_DATE DESC");
+
+        String sql = sb.toString();
+
+        this.pStatement = this.dbConnection.prepareStatement(sql);
+
+        this.pStatement.setLong(1, sculpture.getId());
+
+        this.rs = this.pStatement.executeQuery();
+
+        return this;
+    }
+
+
 }

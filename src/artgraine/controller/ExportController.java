@@ -12,9 +12,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.util.Callback;
 import org.jxls.common.Context;
 import org.jxls.util.JxlsHelper;
 
@@ -23,9 +20,7 @@ import java.io.*;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.util.List;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class ExportController extends AbstractController implements Initializable{

@@ -18,6 +18,7 @@ import javafx.util.Callback;
 import org.jxls.common.Context;
 import org.jxls.util.JxlsHelper;
 
+import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.sql.Connection;
@@ -67,12 +68,16 @@ public class ExportController extends AbstractController implements Initializabl
             if(selectedExhibition != null){
                 List<Sculpture> sculptureList = sculptureDAO.findSculptureByExhibition(selectedExhibition).getResults();
                 InputStream is = new FileInputStream("templates/exhibition-sculpture-list.xls");
-                OutputStream os = new FileOutputStream("expo.xls");
+                String outputPath = "exports/"+selectedExhibition.getTitle()+".xls";
+                OutputStream os = new FileOutputStream(outputPath);
 
                 Context context = new Context();
                 context.putVar("exportTitle", selectedExhibition);
                 context.putVar("sculptureList", sculptureList);
                 JxlsHelper.getInstance().processTemplate(is, os, context);
+
+                File outputFile = new File(outputPath);
+                Desktop.getDesktop().open(outputFile);
             }
         } catch (IOException e) {
             e.printStackTrace();
